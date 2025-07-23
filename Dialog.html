@@ -1,119 +1,121 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <style>
-      body {
-        margin: 0;
-        padding: 20px;
-        font-family: Arial, sans-serif;
-        background-color: #111;
-        color: #fff;
-      }
-      .dialog {
-        background-color: #000;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-      }
-      label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-        font-size: 14px;
-      }
-      select {
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-        border: 2px solid #FF6600;
-        border-radius: 8px;
-        background-color: #222;
-        color: #fff;
-        margin-bottom: 16px;
-        appearance: none;
-      }
-      button {
-        width: 100%;
-        padding: 12px;
-        font-size: 15px;
-        font-weight: bold;
-        color: #000;
-        background-color: #888;
-        border: none;
-        border-radius: 8px;
-        cursor: not-allowed;
-        transition: background-color 0.2s;
-      }
-      button.enabled {
-        background-color: #FF6600;
-        color: #fff;
-        cursor: pointer;
-      }
-      button.enabled:hover {
-        background-color: #e65500;
-      }
-      #status {
-        margin-top: 16px;
-        font-size: 13px;
-        line-height: 1.4;
-      }
-      a {
-        color: #FF6600;
-        text-decoration: none;
-        font-weight: bold;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="dialog">
-      <label for="campaignSelect">Select Campaign:</label>
-      <select id="campaignSelect">
-        <option value="" disabled selected>Manual</option>
-        <? for (let i = 0; i < campaigns.length; i++) { ?>
-          <option value="<?= campaigns[i] ?>"><?= campaigns[i] ?></option>
-        <? } ?>
-      </select>
-      <button id="launchBtn">Launch</button>
-      <div id="status"></div>
-    </div>
-
-    <script>
-      const select = document.getElementById('campaignSelect');
-      const btn    = document.getElementById('launchBtn');
-      const status = document.getElementById('status');
-
-      select.addEventListener('change', () => {
-        if (select.value) {
-          btn.disabled = false;
-          btn.classList.add('enabled');
-        } else {
-          btn.disabled = true;
-          btn.classList.remove('enabled');
-        }
-      });
-
-      btn.addEventListener('click', () => {
-        const camp = select.value;
-        btn.disabled = true;
-        btn.textContent = 'Processing…';
-        status.textContent = 'Running all steps…';
-        google.script.run
-          .withFailureHandler(err => {
-            status.textContent = '❌ ' + err.message;
-            btn.disabled = false;
-            btn.textContent = 'Launch';
-          })
-          .withSuccessHandler(res => {
-            status.innerHTML = 
-              `✅ Done! ${res.count} leads copied.<br>` +
-              `<a href="${res.url}" target="_blank">Open New Sheet</a>`;
-            btn.textContent = 'Launch';
-          })
-          .runAllSteps(camp);
-      });
-    </script>
-  </body>
-</html>
+ <!DOCTYPE html>
+ <html>
+   <head>
+     <style>
+       body {
+         margin: 0;
+         padding: 20px;
+-        font-family: Arial, sans-serif;
+-        background-color: #111;
+-        color: #fff;
++        font-family: "Segoe UI", Tahoma, sans-serif;
++        background: linear-gradient(135deg, #1e1e1e, #111);
++        color: #eee;
+       }
+       .dialog {
+-        background-color: #000;
++        background: #1c1c1c;
+         border-radius: 12px;
+-        padding: 20px;
+-        box-shadow: 0 4px 10px rgba(0,0,0,0.6);
++        border: 1px solid #333;
++        padding: 24px;
++        box-shadow: 0 6px 18px rgba(0,0,0,0.8);
+       }
+       label {
+         display: block;
+         margin-bottom: 8px;
+-        font-weight: bold;
+-        font-size: 14px;
++        font-weight: 600;
++        font-size: 15px;
+       }
+       select {
+         width: 100%;
+         padding: 10px;
+         font-size: 14px;
+         border: 2px solid #FF6600;
+         border-radius: 8px;
+-        background-color: #222;
++        background-color: #282828;
+         color: #fff;
+         margin-bottom: 16px;
+         appearance: none;
+       }
+       button {
+         width: 100%;
+         padding: 12px;
+         font-size: 15px;
+         font-weight: bold;
+-        color: #000;
+-        background-color: #888;
++        color: #fff;
++        background-color: #555;
+         border: none;
+         border-radius: 8px;
+         cursor: not-allowed;
+         transition: background-color 0.2s;
+       }
+       button.enabled {
+         background-color: #FF6600;
+         color: #fff;
+         cursor: pointer;
+       }
+       button.enabled:hover {
+         background-color: #e65500;
+       }
+       #status {
+         margin-top: 16px;
+         font-size: 13px;
+         line-height: 1.4;
++        color: #ccc;
+       }
+       a {
+         color: #FF6600;
+         text-decoration: none;
+         font-weight: bold;
+       }
+       a:hover {
+         text-decoration: underline;
+       }
+-    </style>
+-  </head>
++      h2 {
++        margin: 0 0 16px;
++        text-align: center;
++        font-size: 18px;
++        color: #fff;
++      }
++      </style>
++    </head>
+   <body>
+     <div class="dialog">
++      <h2>Launch Campaign</h2>
+       <label for="campaignSelect">Select Campaign:</label>
+       <select id="campaignSelect">
+         <option value="" disabled selected>Manual</option>
+         <? for (let i = 0; i < campaigns.length; i++) { ?>
+           <option value="<?= campaigns[i] ?>"><?= campaigns[i] ?></option>
+         <? } ?>
+       </select>
+       <button id="launchBtn">Launch</button>
+       <div id="status"></div>
+     </div>
+ 
+     <script>
+       const select = document.getElementById('campaignSelect');
+       const btn    = document.getElementById('launchBtn');
+       const status = document.getElementById('status');
+ 
+       select.addEventListener('change', () => {
+         if (select.value) {
+           btn.disabled = false;
+           btn.classList.add('enabled');
+         } else {
+           btn.disabled = true;
+           btn.classList.remove('enabled');
+         }
+       });
+ 
+EOF
+)
